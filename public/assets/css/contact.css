@@ -1,0 +1,217 @@
+  main {
+      padding-top: 110px;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding-inline: clamp(1.5rem, 5vw, 4rem);
+      padding-bottom: 6rem;
+  }
+
+  .page-header {
+      text-align: center;
+      padding: 3rem 0 2.5rem;
+  }
+
+  .page-header h1 {
+      font-size: clamp(2.4rem, 6vw, 3.4rem);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.8rem;
+  }
+
+  .page-header .subtitle {
+      font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+      color: var(--muted);
+      max-width: 680px;
+      margin: 0 auto;
+  }
+
+  .contact-wrapper {
+      display: grid;
+      grid-template-columns: minmax(380px, 1fr) minmax(420px, 1fr);
+      gap: clamp(2rem, 4vw, 3.5rem);
+      margin-top: 1.5rem;
+  }
+
+  .contact-panel {
+      background: var(--card);
+      border-radius: 16px;
+      padding: clamp(1.8rem, 3vw, 2.4rem);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.38);
+      transition: box-shadow 0.3s ease;
+  }
+
+  .contact-panel:hover {
+      box-shadow: 0 12px 48px rgba(212, 175, 55, 0.12);
+  }
+
+  .panel-title {
+      font-size: 1.45rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 1.6rem;
+      position: relative;
+      display: inline-block;
+  }
+
+  .panel-title::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 48%;
+      height: 2.5px;
+      background: linear-gradient(to right, var(--primary), transparent);
+  }
+
+  /* ─── INFO SIDE ─── */
+  .info-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.3rem;
+  }
+
+  .info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      font-size: 1.03rem;
+  }
+
+  .info-item i {
+      font-size: 1.35rem;
+      color: var(--primary);
+      margin-top: 4px;
+  }
+
+  .info-item a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+  }
+
+  .social-row {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2.2rem;
+  }
+
+  .social-btn {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 1.15rem;
+      transition: all 0.28s ease;
+  }
+
+  .social-btn:hover {
+      background: var(--primary);
+      color: #000;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px var(--primary-soft);
+  }
+
+  .map-frame {
+      margin-top: 2rem;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      height: 320px;
+  }
+
+  /* ─── FORM SIDE ─── */
+  .form-group {
+      margin-bottom: 1.4rem;
+  }
+
+  .form-group label {
+      display: block;
+      font-size: 0.92rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #d0d0d4;
+  }
+
+  input,
+  textarea {
+      width: 100%;
+      padding: 0.85rem 1.1rem;
+      font-size: 0.98rem;
+      background: #18181d;
+      border: 1px solid #3a3a42;
+      border-radius: 10px;
+      color: white;
+      transition: all 0.22s ease;
+  }
+
+  input:focus,
+  textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-soft);
+      background: #1e1e24;
+  }
+
+  textarea {
+      min-height: 118px;
+      resize: vertical;
+  }
+
+  .submit-btn {
+      width: 100%;
+      padding: 1rem;
+      margin-top: 1.2rem;
+      background: var(--primary);
+      color: #000;
+      font-size: 1.05rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+  }
+
+  .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px var(--primary-soft);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 960px) {
+      .contact-wrapper {
+          grid-template-columns: 1fr;
+          gap: 2.5rem;
+      }
+  }
+
+  @media (max-width: 600px) {
+      main {
+          padding-top: 100px;
+          padding-inline: 1.25rem;
+          padding-bottom: 5rem;
+      }
+
+      .page-header {
+          padding: 2.5rem 0 2rem;
+      }
+
+      .page-header h1 {
+          font-size: 2.4rem;
+      }
+
+      .contact-panel {
+          padding: 1.8rem 1.5rem;
+      }
+
+      .map-frame {
+          height: 260px;
+      }
+  }
+
+  a {
+      text-decoration: none;
+  }

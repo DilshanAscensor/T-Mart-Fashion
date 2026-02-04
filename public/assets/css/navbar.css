@@ -1,0 +1,120 @@
+header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    background: rgba(10, 10, 12, 0.85);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 5rem;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 2.1rem;
+    font-weight: 800;
+    letter-spacing: 4px;
+    color: var(--primary);
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 2.2rem;
+}
+
+nav a {
+    font-weight: 500;
+    opacity: 0.92;
+    transition: all 0.35s ease;
+    position: relative;
+}
+
+nav a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -6px;
+    left: 0;
+    background: var(--primary);
+    transition: width 0.35s ease;
+}
+
+nav a:hover::after {
+    width: 100%;
+}
+
+nav a:hover {
+    color: var(--primary);
+}
+
+.nav-btn {
+    padding: 0.7rem 1.8rem;
+    border-radius: 50px;
+    border: 1.5px solid var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+    transition: all 0.4s;
+}
+
+.nav-btn:hover {
+    background: var(--primary);
+    color: #000;
+    transform: translateY(-2px);
+}
+
+.menu-toggle {
+    display: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: var(--text);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .nav-container {
+        padding: 1.2rem 3rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    nav {
+        position: fixed;
+        top: 80px;
+        right: -100%;
+        width: 300px;
+        height: 100vh;
+        background: var(--bg);
+        flex-direction: column;
+        padding: 5rem 2rem;
+        transition: right 0.5s ease;
+    }
+
+    nav.active {
+        right: 0;
+    }
+}
+
+@media (max-width: 360px) {
+    .nav-container {
+        padding: 0.9rem 1.2rem;
+    }
+
+    .logo {
+        font-size: 1.6rem;
+        letter-spacing: 3px;
+    }
+}
