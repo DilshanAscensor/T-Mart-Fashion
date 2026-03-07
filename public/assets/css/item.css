@@ -253,3 +253,7 @@
          justify-content: center;
      }
  }
+
+ .text-danger {
+     color: #e63946 !important;
+ }

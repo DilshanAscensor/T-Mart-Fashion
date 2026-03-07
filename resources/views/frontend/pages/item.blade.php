@@ -49,7 +49,32 @@
 
                 <div class="action-buttons">
                     <a href="/cart" class="btn-primary text-center">Add to Cart</a>
-                    <button class="btn-secondary"><i class="far fa-heart"></i> Add to Wishlist</button>
+                    @auth
+                        @php
+                            $isWishlisted = auth()->user()->wishlistProducts->contains($product->id);
+                        @endphp
+
+                        @if ($isWishlisted)
+                            <form action="{{ route('wishlist.remove', $product->id) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn-secondary text-danger">
+                                    <i class="fas fa-heart"></i> Remove from Wishlist
+                                </button>
+                            </form>
+                        @else
+                            <form action="{{ route('wishlist.add', $product->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn-secondary">
+                                    <i class="far fa-heart"></i> Add to Wishlist
+                                </button>
+                            </form>
+                        @endif
+                    @else
+                        <a href="{{ route('login') }}" class="btn-secondary">
+                            <i class="far fa-heart"></i> Login to Wishlist
+                        </a>
+                    @endauth
                 </div>
 
                 <div class="tabs">

@@ -21,6 +21,8 @@ return new class extends Migration
             $table->integer('stock');
             $table->string('size')->nullable();
             $table->string('color')->nullable();
+            $table->decimal('discount_price', 10, 2)->nullable();
+            $table->boolean('featured')->default(false);
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

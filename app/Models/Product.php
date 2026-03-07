@@ -17,7 +17,9 @@ class Product extends Model
         'stock',
         'size',
         'color',
-        'status'
+        'discount_price',
+        'featured',
+        'status',
     ];
 
     public function category(): BelongsTo
@@ -38,5 +40,10 @@ class Product extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+    public function wishlistedBy()
+    {
+        return $this->belongsToMany(User::class, 'wishlist_items')
+            ->withTimestamps();
     }
 }

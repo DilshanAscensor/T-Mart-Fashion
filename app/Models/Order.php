@@ -10,9 +10,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Order extends Model
 {
     protected $fillable = [
+        'order_number',
         'user_id',
         'total_amount',
-        'status'
+        'status',
+        'shipping_name',
+        'shipping_phone',
+        'shipping_address',
+        'notes',
     ];
 
     public function user(): BelongsTo

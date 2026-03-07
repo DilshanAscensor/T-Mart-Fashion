@@ -1,0 +1,163 @@
+<?php
+
+namespace App\Filament\Resources\Products\Schemas;
+
+use Filament\Forms\Components\FileUpload;
+use Filament\Schemas\Components\Grid;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
+
+class ProductForm
+{
+    public static function configure(Schema $schema): Schema
+    {
+        return $schema
+            ->columns(2)
+            ->components([
+
+                Section::make('Basic Information')
+                    ->description('Core product details')
+                    ->columnSpanFull()
+                    ->schema([
+                        Grid::make()
+                            ->columns(2)
+                            ->schema([
+                                Select::make('category_id')
+                                    ->relationship('category', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->required(),
+
+                                TextInput::make('name')
+                                    ->label('Product Name')
+                                    ->required()
+                                    ->maxLength(120)
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(
+                                        fn(Set $set, ?string $state) =>
+                                        $set('slug', Str::slug($state))
+                                    ),
+
+                                TextInput::make('slug')
+                                    ->required()
+                                    ->maxLength(150)
+                                    ->unique(
+                                        table: 'products',
+                                        column: 'slug',
+                                        ignorable: fn(Get $get) => $get('id') // skips current record on edit
+                                    )
+                                    ->helperText('Auto-generated from name – editable if needed')
+                                    ->dehydrated(true),
+                            ]),
+                    ]),
+
+                Section::make('Pricing & Inventory')
+                    ->columns(2)
+                    ->schema([
+                        TextInput::make('price')
+                            ->label('Regular Price')
+                            ->required()
+                            ->numeric()
+                            ->prefix('Rs')
+                            ->minValue(0)
+                            ->step(0.01),
+
+                        TextInput::make('stock')
+                            ->required()
+                            ->numeric()
+                            ->minValue(0)
+                            ->helperText('0 = out of stock'),
+                    ]),
+
+                Section::make('Product Images')
+                    ->description('Upload clear, high-quality photos. First image becomes the thumbnail.')
+                    ->columnSpanFull()
+                    ->schema([
+                        Repeater::make('images')
+                            ->relationship('images')
+                            ->label('Images')
+                            ->minItems(1)
+                            ->maxItems(12)
+                            ->reorderable()
+                            ->collapsible()
+                            ->cloneable()
+                            ->grid(2)
+                            ->defaultItems(1)
+                            ->schema([
+                                FileUpload::make('image_path')
+                                    ->label('Image')
+                                    ->image()
+                                    ->imageEditor()
+                                    ->imageCropAspectRatio('4:5')
+                                    ->directory('products')
+                                    ->disk('public')
+                                    ->required()
+                                    ->imagePreviewHeight('200')
+                                    ->maxSize(10240), // ~10MB
+                            ])
+                            ->columnSpanFull(),
+                    ]),
+
+                Section::make('Attributes & Variants')
+                    ->description('Define available options for this product')
+                    ->columns(2)
+                    ->schema([
+                        Select::make('available_sizes')
+                            ->multiple()
+                            ->label('Available Sizes')
+                            ->options([
+                                'XXS' => 'XXS',
+                                'XS'  => 'XS',
+                                'S'   => 'S',
+                                'M'   => 'M',
+                                'L'   => 'L',
+                                'XL'  => 'XL',
+                                'XXL' => 'XXL',
+                                '3XL' => '3XL',
+                                '4XL' => '4XL',
+                            ])
+                            ->helperText('Select multiple with Ctrl/Cmd'),
+
+                        Select::make('available_colors')
+                            ->multiple()
+                            ->label('Available Colors')
+                            ->options([
+                                'Black'  => 'Black',
+                                'White'  => 'White',
+                                'Red'    => 'Red',
+                                'Blue'   => 'Blue',
+                                'Green'  => 'Green',
+                                'Grey'   => 'Grey',
+                                'Navy'   => 'Navy',
+                                'Beige'  => 'Beige',
+                                'Brown'  => 'Brown',
+                                'Pink'   => 'Pink',
+                            ])
+                            ->helperText('Select all applicable colors'),
+                    ]),
+
+                Section::make('Description & Status')
+                    ->columnSpanFull()
+                    ->schema([
+                        Textarea::make('description')
+                            ->label('Product Description')
+                            ->rows(6)
+                            ->columnSpanFull()
+                            ->helperText('Use markdown for formatting if needed'),
+
+                        Toggle::make('status')
+                            ->label('Active (visible to customers)')
+                            ->inline(false)
+                            ->default(true),
+                    ]),
+            ]);
+    }
+}
