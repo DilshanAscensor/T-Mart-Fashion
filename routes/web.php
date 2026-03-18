@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('frontend.pages.home');
-});
+
+Route::get('/', [HomeController::class, 'index'])->name('home.index');
+
 Route::get('/categories', function () {
     return view('frontend.pages.categories');
 });
@@ -30,3 +32,6 @@ Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.in
 Route::post('/wishlist/add/{product}', [WishlistController::class, 'store'])->name('wishlist.add');
 
 Route::delete('/wishlist/remove/{product}', [WishlistController::class, 'destroy'])->name('wishlist.remove');
+
+Route::resource('categories', CategoryController::class);
+

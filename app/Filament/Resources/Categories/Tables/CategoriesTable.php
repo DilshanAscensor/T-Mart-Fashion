@@ -25,7 +25,11 @@ class CategoriesTable
                     ->searchable(),
                 TextColumn::make('slug')
                     ->searchable(),
-                ImageColumn::make('image'),
+                ImageColumn::make('image')
+                    ->disk('public')
+                    ->getStateUsing(fn($record) => $record->image)
+                    ->url(fn($record) => $record->image ? asset('storage/' . $record->image) : null)
+                    ->extraImgAttributes(['loading' => 'lazy']),
                 IconColumn::make('status')
                     ->boolean(),
                 TextColumn::make('created_at')
