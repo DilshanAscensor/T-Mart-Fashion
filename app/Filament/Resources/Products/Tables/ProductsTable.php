@@ -27,10 +27,7 @@ class ProductsTable
                 TextColumn::make('stock')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('size')
-                    ->searchable(),
-                TextColumn::make('color')
-                    ->searchable(),
+                
                 IconColumn::make('status')
                     ->boolean(),
                 TextColumn::make('created_at')

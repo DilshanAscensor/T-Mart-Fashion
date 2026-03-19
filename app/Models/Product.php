@@ -14,9 +14,6 @@ class Product extends Model
         'slug',
         'description',
         'price',
-        'stock',
-        'size',
-        'color',
         'discount_price',
         'featured',
         'status',
@@ -32,6 +29,10 @@ class Product extends Model
         return $this->hasMany(ProductImage::class);
     }
 
+    public function variants(): HasMany
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
     public function cartItems(): HasMany
     {
         return $this->hasMany(CartItem::class);

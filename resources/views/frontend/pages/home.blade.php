@@ -17,11 +17,13 @@
         </div>
         <div class="categories">
             @foreach ($categories as $category)
-                <div class="card">
-                    <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" loading="lazy"
-                        decoding="async">
-                    <div class="overlay">{{ $category->name }}</div>
-                </div>
+                <a href="{{ route('category.products', $category->slug) }}">
+                    <div class="card">
+                        <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" loading="lazy"
+                            decoding="async">
+                        <div class="overlay">{{ $category->name }}</div>
+                    </div>
+                </a>
             @endforeach
 
 
@@ -43,13 +45,14 @@
             @foreach ($products as $product)
                 <div class="product">
                     @if ($product->images->first())
-                        <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" alt="{{ $product->name }}">
+                        <img src="{{ asset('storage/' . $product->images->first()->image_path) }}"
+                            alt="{{ $product->name }}">
                     @endif
                     <h4>{{ $product->name }}</h4>
                     <span>LKR {{ number_format($product->price, 2) }}</span>
                 </div>
             @endforeach
-           
+
         </div>
     </section>
 

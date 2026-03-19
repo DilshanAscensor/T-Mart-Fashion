@@ -49,7 +49,7 @@
 
                 <div class="action-buttons">
                     <a href="/cart" class="btn-primary text-center">Add to Cart</a>
-                    @auth
+                    {{-- @auth
                         @php
                             $isWishlisted = auth()->user()->wishlistProducts->contains($product->id);
                         @endphp
@@ -74,7 +74,7 @@
                         <a href="{{ route('login') }}" class="btn-secondary">
                             <i class="far fa-heart"></i> Login to Wishlist
                         </a>
-                    @endauth
+                    @endauth --}}
                 </div>
 
                 <div class="tabs">

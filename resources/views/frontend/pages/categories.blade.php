@@ -12,7 +12,7 @@
                 <div class="categories-grid">
 
                     @foreach($categories as $category)
-                        <a href="/item" class="category-card">
+                        <a href="{{ route('category.products', $category->slug) }}" class="category-card">
                             <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}"
                                 loading="lazy">
                             <div class="category-overlay">
@@ -22,7 +22,7 @@
                             </div>
                         </a>
                     @endforeach
-                  
+
 
                 </div>
             </div>

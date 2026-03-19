@@ -60,7 +60,6 @@ class ProductForm
                     ]),
 
                 Section::make('Pricing & Inventory')
-                    ->columns(2)
                     ->schema([
                         TextInput::make('price')
                             ->label('Regular Price')
@@ -70,11 +69,11 @@ class ProductForm
                             ->minValue(0)
                             ->step(0.01),
 
-                        TextInput::make('stock')
-                            ->required()
-                            ->numeric()
-                            ->minValue(0)
-                            ->helperText('0 = out of stock'),
+                        // TextInput::make('stock')
+                        //     ->required()
+                        //     ->numeric()
+                        //     ->minValue(0)
+                        //     ->helperText('0 = out of stock'),
                     ]),
 
                 Section::make('Product Images')
@@ -105,44 +104,63 @@ class ProductForm
                             ])
                             ->columnSpanFull(),
                     ]),
-
-                Section::make('Attributes & Variants')
-                    ->description('Define available options for this product')
-                    ->columns(2)
+                Section::make('Variants')
+                    ->description('Add size, color and stock combinations')
+                    ->columnSpanFull()
                     ->schema([
-                        Select::make('available_sizes')
-                            ->multiple()
-                            ->label('Available Sizes')
-                            ->options([
-                                'XXS' => 'XXS',
-                                'XS'  => 'XS',
-                                'S'   => 'S',
-                                'M'   => 'M',
-                                'L'   => 'L',
-                                'XL'  => 'XL',
-                                'XXL' => 'XXL',
-                                '3XL' => '3XL',
-                                '4XL' => '4XL',
-                            ])
-                            ->helperText('Select multiple with Ctrl/Cmd'),
 
-                        Select::make('available_colors')
-                            ->multiple()
-                            ->label('Available Colors')
-                            ->options([
-                                'Black'  => 'Black',
-                                'White'  => 'White',
-                                'Red'    => 'Red',
-                                'Blue'   => 'Blue',
-                                'Green'  => 'Green',
-                                'Grey'   => 'Grey',
-                                'Navy'   => 'Navy',
-                                'Beige'  => 'Beige',
-                                'Brown'  => 'Brown',
-                                'Pink'   => 'Pink',
-                            ])
-                            ->helperText('Select all applicable colors'),
+                        Repeater::make('variants')
+                            ->relationship('variants')
+                            ->minItems(1)
+                            ->collapsible()
+                            ->cloneable()
+                            ->reorderable()
+                            ->grid(3)
+                            ->schema([
+
+                                Select::make('size')
+                                    ->options([
+                                        'XXS' => 'XXS',
+                                        'XS'  => 'XS',
+                                        'S'   => 'S',
+                                        'M'   => 'M',
+                                        'L'   => 'L',
+                                        'XL'  => 'XL',
+                                        'XXL' => 'XXL',
+                                        '3XL' => '3XL',
+                                        '4XL' => '4XL',
+                                    ])
+                                    ->required(),
+
+                                Select::make('color')
+                                    ->options([
+                                        'Black'  => 'Black',
+                                        'White'  => 'White',
+                                        'Red'    => 'Red',
+                                        'Blue'   => 'Blue',
+                                        'Green'  => 'Green',
+                                        'Grey'   => 'Grey',
+                                        'Navy'   => 'Navy',
+                                        'Beige'  => 'Beige',
+                                        'Brown'  => 'Brown',
+                                        'Pink'   => 'Pink',
+                                    ])
+                                    ->required(),
+
+                                TextInput::make('stock')
+                                    ->numeric()
+                                    ->required()
+                                    ->minValue(0),
+
+                                // optional
+                                TextInput::make('price')
+                                    ->numeric()
+                                    ->prefix('Rs')
+                                    ->nullable(),
+                            ]),
                     ]),
+
+
 
                 Section::make('Description & Status')
                     ->columnSpanFull()
