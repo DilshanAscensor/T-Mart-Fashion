@@ -21,6 +21,7 @@ return new class extends Migration
             $table->dateTime('paid_at');
             $table->enum('status', ['success', 'failed', 'pending'])->default('pending');
             $table->timestamps();
+             $table->softDeletes();
         });
     }
 

@@ -43,14 +43,16 @@
         </div>
         <div class="products">
             @foreach ($products as $product)
-                <div class="product">
-                    @if ($product->images->first())
-                        <img src="{{ asset('storage/' . $product->images->first()->image_path) }}"
-                            alt="{{ $product->name }}">
-                    @endif
-                    <h4>{{ $product->name }}</h4>
-                    <span>LKR {{ number_format($product->price, 2) }}</span>
-                </div>
+                <a href="{{ route('products.show', $product->id) }}">
+                    <div class="product">
+                        @if ($product->images->first())
+                            <img src="{{ asset('storage/' . $product->images->first()->image_path) }}"
+                                alt="{{ $product->name }}">
+                        @endif
+                        <h4>{{ $product->name }}</h4>
+                        <span>LKR {{ number_format($product->price, 2) }}</span>
+                    </div>
+                </a>
             @endforeach
 
         </div>

@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('shipping_address')->nullable();
             $table->string('notes')->nullable();
             $table->timestamps();
+             $table->softDeletes();
         });
     }
 
