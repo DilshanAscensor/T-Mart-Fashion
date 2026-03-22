@@ -73,14 +73,11 @@
                       <span>Shipping</span>
                       <span>Calculated at checkout</span>
                   </div>
-                  <div class="summary-row">
-                      <span>Estimated Tax (10%)</span>
-                      <span>LKR {{ number_format($subtotal * 0.1, 0) }}</span>
-                  </div>
+
 
                   <div class="summary-total">
                       <span>Total</span>
-                      <span>LKR {{ number_format($subtotal * 1.1, 0) }}</span>
+                      <span>LKR {{ number_format($subtotal , 0) }}</span>
                   </div>
 
                   <div class="action-buttons">

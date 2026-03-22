@@ -16,11 +16,10 @@
              <!-- Cart Icon with Count -->
              <a href="{{ route('cart') }}" class="cart-icon-link">
                  <i class="fas fa-shopping-cart"></i>
-                 @if (session('cart'))
-                     <span class="cart-count">{{ array_sum(array_column(session('cart'), 'quantity')) }}</span>
-                 @else
-                     <span class="cart-count">0</span>
-                 @endif
+
+                 <span class="cart-count">
+                     {{ session('cart') ? count(session('cart')) : 0 }}
+                 </span>
              </a>
 
          </nav>

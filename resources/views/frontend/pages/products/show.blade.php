@@ -1,6 +1,37 @@
 @extends('frontend.layout.main', ['titlePage' => 'Product'])
 @section('content')
     <link rel="stylesheet" href="{{ asset('assets/css/item.css') }}">
+    <style>
+        /* Remove arrows in Chrome, Safari, Edge */
+        .qty-input::-webkit-outer-spin-button,
+        .qty-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Remove arrows in Firefox */
+        .qty-input {
+            -moz-appearance: textfield;
+        }
+
+        .qty-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qty-input {
+            width: 60px;
+            text-align: center;
+            padding: 6px;
+        }
+
+        .qty-increase,
+        .qty-decrease {
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+    </style>
     <section>
         <div class="product-container">
             <div class="product-gallery">
@@ -45,7 +76,11 @@
 
                 <div class="quantity">
                     <label>Quantity</label>
-                    <input type="number" class="qty-input" value="1" min="1">
+                    <div class="qty-wrapper">
+                        <button type="button" class="qty-decrease">-</button>
+                        <input type="number" class="qty-input" value="1" min="1">
+                        <button type="button" class="qty-increase">+</button>
+                    </div>
                 </div>
 
                 <div class="action-buttons">
@@ -130,14 +165,109 @@
         });
     </script>
     <script>
+        const variants = @json($product->variants);
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const firstColor = document.querySelector('.color-option');
+            const firstSize = document.querySelector('.size-btn');
+
+            if (firstColor) {
+                firstColor.classList.add('active');
+                selectedColor = firstColor.dataset.color;
+            }
+
+            if (firstSize) {
+                firstSize.classList.add('active');
+                selectedSize = firstSize.innerText;
+            }
+
+            findVariant();
+        });
+
+
+        let selectedColor = null;
+        let selectedSize = null;
+        let selectedVariant = null;
+
+        // Color select
+        document.querySelectorAll('.color-option').forEach(el => {
+            el.addEventListener('click', function() {
+                document.querySelectorAll('.color-option').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                selectedColor = this.dataset.color;
+
+                findVariant();
+            });
+        });
+
+        // Size select
+        document.querySelectorAll('.size-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedSize = this.innerText;
+
+                findVariant();
+            });
+        });
+
+        function findVariant() {
+            if (selectedColor && selectedSize) {
+                selectedVariant = variants.find(v =>
+                    v.color === selectedColor && v.size === selectedSize
+                );
+
+                if (selectedVariant) {
+                    document.querySelector('.qty-input').max = selectedVariant.stock;
+
+                    if (selectedVariant.stock <= 0) {
+                        if (selectedVariant.stock <= 0) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Out of Stock',
+                                text: 'This variant is currently unavailable.',
+                            });
+
+                            document.querySelector('.add-to-cart-btn').disabled = true;
+                        } else {
+                            document.querySelector('.add-to-cart-btn').disabled = false;
+                        }
+                    }
+                }
+            }
+        }
+
         document.querySelectorAll('.add-to-cart-btn').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
 
+                if (!selectedVariant) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Selection Required',
+                        text: 'This variant is currently unavailable.',
+                    });
+
+                    return;
+                }
+
+                const qty = document.querySelector('.qty-input').value;
+
+                if (qty > selectedVariant.stock) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Out of Stock',
+                            text: 'This variant is currently unavailable.',
+                        });
+
+
+                    return;
+                }
+
                 const baseUrl = this.getAttribute('data-url');
                 const productId = this.getAttribute('data-product-id');
-
-                // Replace placeholder with real ID
                 const url = baseUrl.replace(':id', productId);
 
                 fetch(url, {
@@ -147,16 +277,37 @@
                             'Content-Type': 'application/json',
                             'Accept': 'application/json',
                         },
+                        body: JSON.stringify({
+                            variant_id: selectedVariant.id,
+                            quantity: qty
+                        })
                     })
-                    .then(response => response.json())
+                    .then(res => res.json())
                     .then(data => {
                         if (data.success) {
                             document.querySelector('.cart-count').textContent = data.cartCount;
-                            // alert(data.message);  or better feedback
                         }
-                    })
-                    .catch(err => console.error(err));
+                    });
             });
+        });
+
+        const qtyInput = document.querySelector('.qty-input');
+
+        document.querySelector('.qty-increase').addEventListener('click', () => {
+            let max = selectedVariant ? selectedVariant.stock : 999;
+            let value = parseInt(qtyInput.value);
+
+            if (value < max) {
+                qtyInput.value = value + 1;
+            }
+        });
+
+        document.querySelector('.qty-decrease').addEventListener('click', () => {
+            let value = parseInt(qtyInput.value);
+
+            if (value > 1) {
+                qtyInput.value = value - 1;
+            }
         });
     </script>
 @endsection
