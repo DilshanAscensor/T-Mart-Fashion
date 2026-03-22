@@ -80,65 +80,89 @@
                 <!-- ORDER REVIEW -->
                 <div class="section-card">
                     <div class="section-title">Review Your Order</div>
-                    <div class="order-item">
-                        <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?w=200"
-                            alt="Premium Leather Jacket">
-                        <div class="order-item-details">
-                            <h5>Premium Leather Jacket × 1</h5>
-                            <div>Color: Black • Size: M</div>
-                            <div class="price">LKR 7,200</div>
+
+                    @php
+                        $cart = session('cart', []);
+                        $subtotal = 0;
+                    @endphp
+
+                    @forelse ($cart as $item)
+                        @php
+                            $itemTotal = $item['price'] * $item['quantity'];
+                            $subtotal += $itemTotal;
+                        @endphp
+
+                        <div class="order-item">
+                            <img src="{{ asset('storage/' . $item['image']) }}" alt="{{ $item['name'] }}">
+
+                            <div class="order-item-details">
+                                <h5>{{ $item['name'] }} × {{ $item['quantity'] }}</h5>
+
+                                <div>
+                                    Color: {{ $item['color'] ?? '-' }} •
+                                    Size: {{ $item['size'] ?? '-' }}
+                                </div>
+
+                                <div class="price">
+                                    LKR {{ number_format($itemTotal, 2) }}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="order-item">
-                        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=200"
-                            alt="Urban Casual Shirt">
-                        <div class="order-item-details">
-                            <h5>Urban Casual Shirt × 2</h5>
-                            <div>Color: White • Size: L</div>
-                            <div class="price">LKR 6,800</div>
-                        </div>
-                    </div>
+                    @empty
+                        <p>Your cart is empty</p>
+                    @endforelse
                 </div>
             </div>
 
             <!-- ORDER SUMMARY - Sticky -->
+            @php
+                $itemCount = count($cart);
+                $shipping = 500;
+                $tax = $subtotal * 0.1; // 10% tax
+                $discount = 0; // you can apply promo logic later
+                $total = $subtotal + $shipping + $tax - $discount;
+            @endphp
+
             <div class="order-summary">
                 <div class="section-title">Order Summary</div>
 
                 <div class="summary-row">
-                    <span>Subtotal (3 items)</span>
-                    <span>LKR 14,000</span>
+                    <span>Subtotal ({{ $itemCount }} items)</span>
+                    <span>LKR {{ number_format($subtotal, 2) }}</span>
                 </div>
+
                 <div class="summary-row">
                     <span>Shipping</span>
-                    <span>LKR 500</span>
+                    <span>LKR {{ number_format($shipping, 2) }}</span>
                 </div>
+
                 <div class="summary-row">
                     <span>Estimated Tax</span>
-                    <span>LKR 1,400</span>
+                    <span>LKR {{ number_format($tax, 2) }}</span>
                 </div>
-                <div class="summary-row">
-                    <span>Discount (PROMO10)</span>
-                    <span style="color:#27ae60;">- LKR 1,400</span>
-                </div>
+
+                @if ($discount > 0)
+                    <div class="summary-row">
+                        <span>Discount</span>
+                        <span style="color:#27ae60;">- LKR {{ number_format($discount, 2) }}</span>
+                    </div>
+                @endif
 
                 <div class="summary-total">
                     <span>Total</span>
-                    <span>LKR 14,500</span>
+                    <span>LKR {{ number_format($total, 2) }}</span>
                 </div>
 
                 <button class="place-order-btn">Place Order</button>
-
-                <p style="text-align:center; font-size:0.9rem; color:var(--muted); margin-top:1.5rem;">
-                    By placing this order you agree to our <a href="#" style="color:var(--primary);">Terms &
-                        Conditions</a>
-                </p>
             </div>
         </div>
 
         <!-- MOBILE STICKY BOTTOM BAR -->
         <div class="sticky-bottom-bar">
-            <div class="sticky-total">Total: LKR 14,500</div>
+            <div class="sticky-total">
+                Total: LKR {{ number_format($total, 2) }}
+            </div>
+
             <button class="sticky-place-order">Place Order</button>
         </div>
     </section>
