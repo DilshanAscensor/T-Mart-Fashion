@@ -24,10 +24,7 @@ class ProductsTable
                 TextColumn::make('price')
                     ->money()
                     ->sortable(),
-                TextColumn::make('stock')
-                    ->numeric()
-                    ->sortable(),
-                
+
                 IconColumn::make('status')
                     ->boolean(),
                 TextColumn::make('created_at')

@@ -49,11 +49,7 @@ class ProductForm
                                 TextInput::make('slug')
                                     ->required()
                                     ->maxLength(150)
-                                    ->unique(
-                                        table: 'products',
-                                        column: 'slug',
-                                        ignorable: fn(Get $get) => $get('id') // skips current record on edit
-                                    )
+                                    ->unique(ignoreRecord: true)
                                     ->helperText('Auto-generated from name – editable if needed')
                                     ->dehydrated(true),
                             ]),
@@ -152,11 +148,7 @@ class ProductForm
                                     ->required()
                                     ->minValue(0),
 
-                                // optional
-                                TextInput::make('price')
-                                    ->numeric()
-                                    ->prefix('Rs')
-                                    ->nullable(),
+
                             ]),
                     ]),
 
