@@ -49,7 +49,7 @@
             <div class="categories-grid products-grid">
 
                 @forelse($products as $product)
-                    <a href="/item/{{ $product->id }}" class="category-card product-card">
+                <a href="{{ route('products.show', $product->id) }}" class="category-card product-card">
                         @if ($product->images->first())
                             <img src="{{ asset('storage/' . $product->images->first()->image_path) }}"
                                 alt="{{ $product->name }}" loading="lazy" class="product-image">

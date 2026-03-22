@@ -12,6 +12,17 @@
              <a href="/categories">Categories</a>
              <a href="/about-us">About</a>
              <a href="/contact-us">Contact</a>
+
+             <!-- Cart Icon with Count -->
+             <a href="{{ route('cart') }}" class="cart-icon-link">
+                 <i class="fas fa-shopping-cart"></i>
+                 @if (session('cart'))
+                     <span class="cart-count">{{ array_sum(array_column(session('cart'), 'quantity')) }}</span>
+                 @else
+                     <span class="cart-count">0</span>
+                 @endif
+             </a>
+
          </nav>
      </div>
  </header>

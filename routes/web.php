@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartController;
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
@@ -28,15 +28,17 @@ Route::get('/contact-us', function () {
     return view('frontend.pages.contact-us');
 });
 
-Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
 
-Route::post('/wishlist/add/{product}', [WishlistController::class, 'store'])->name('wishlist.add');
+Route::get('/cart', function () {
+    return view('frontend.pages.cart.index');
+})->name('cart');
 
-Route::delete('/wishlist/remove/{product}', [WishlistController::class, 'destroy'])->name('wishlist.remove');
+Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
+Route::post('/cart/remove', [CartController::class, 'removeCart'])->name('cart.remove');
+
 Route::get('/category/{category:slug}/products', [ProductController::class, 'categoryProducts'])
     ->name('category.products');
-    
+
 Route::resource('categories', CategoryController::class);
 Route::resource('products', ProductController::class);
-
-

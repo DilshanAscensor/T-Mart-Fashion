@@ -79,6 +79,31 @@ nav a:hover {
     color: var(--text);
 }
 
+.cart-icon-link {
+    position: relative;
+    margin-left: 20px;
+    font-size: 1.4rem;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.cart-count {
+    position: absolute;
+    top: -8px;
+    right: -12px;
+    background: #e74c3c;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+
 /* Responsive */
 @media (max-width: 1024px) {
     .nav-container {

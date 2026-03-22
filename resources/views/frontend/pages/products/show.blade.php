@@ -6,17 +6,19 @@
             <div class="product-gallery">
                 <div class="main-image">
                     @if ($product->images->first())
-                        <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" alt="{{ $product->name }}" id="mainImg">
-
+                        <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" alt="{{ $product->name }}"
+                            id="mainImg">
                     @endif
                 </div>
                 <div class="thumbnails">
                     @foreach ($product->images as $image)
-                        <div class="thumb {{ $loop->first ? 'active' : '' }}" data-src="{{ asset('storage/' . $image->image_path) }}">
-                            <img src="{{ asset('storage/' . $image->image_path) }}" alt="{{ $product->name }} thumbnail" loading="lazy" decoding="async">
+                        <div class="thumb {{ $loop->first ? 'active' : '' }}"
+                            data-src="{{ asset('storage/' . $image->image_path) }}">
+                            <img src="{{ asset('storage/' . $image->image_path) }}" alt="{{ $product->name }} thumbnail"
+                                loading="lazy" decoding="async">
                         </div>
                     @endforeach
-                   
+
                 </div>
             </div>
 
@@ -26,7 +28,8 @@
 
                 <div class="variant-colors">
                     @foreach ($product->variants->pluck('color')->unique() as $color)
-                        <div class="color-option" style="background:{{ $color }};" data-color="{{ $color }}"></div>
+                        <div class="color-option" style="background:{{ $color }};" data-color="{{ $color }}">
+                        </div>
                     @endforeach
 
                 </div>
@@ -46,8 +49,10 @@
                 </div>
 
                 <div class="action-buttons">
-                    <a href="/cart" class="btn-primary text-center">Add to Cart</a>
-
+                    <button type="button" class="btn-primary text-center add-to-cart-btn"
+                        data-url="{{ route('cart.add', ':id') }}" data-product-id="{{ $product->id }}">
+                        Add to Cart
+                    </button>
                 </div>
                 <div class="tabs">
                     <div class="tab-headers">
@@ -121,6 +126,36 @@
 
                 header.classList.add('active');
                 document.getElementById(header.dataset.tab).classList.add('active');
+            });
+        });
+    </script>
+    <script>
+        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const baseUrl = this.getAttribute('data-url');
+                const productId = this.getAttribute('data-product-id');
+
+                // Replace placeholder with real ID
+                const url = baseUrl.replace(':id', productId);
+
+                fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.querySelector('.cart-count').textContent = data.cartCount;
+                            // alert(data.message);  or better feedback
+                        }
+                    })
+                    .catch(err => console.error(err));
             });
         });
     </script>
