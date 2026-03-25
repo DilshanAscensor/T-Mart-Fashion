@@ -59,7 +59,8 @@
 
                 <div class="variant-colors">
                     @foreach ($product->variants->pluck('color')->unique() as $color)
-                        <div class="color-option" style="background:{{ $color }};" data-color="{{ $color }}">
+                        <div class="color-option" style="" data-color="{{ $color }}">
+                            {{ $color }}
                         </div>
                     @endforeach
 
