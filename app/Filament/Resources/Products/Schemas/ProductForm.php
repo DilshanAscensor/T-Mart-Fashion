@@ -140,6 +140,15 @@ class ProductForm
                                         'Beige'  => 'Beige',
                                         'Brown'  => 'Brown',
                                         'Pink'   => 'Pink',
+                                        'Dark blue'   => 'dark blue',
+                                        'light blue'   => 'light blue',
+                                        'Yellow'   => 'yellow',
+                                        'Light Yellow'   => 'light yellow',
+                                        'Maroon'   => 'maroon',
+                                        'Purple'   => 'purple',
+                                        'Light Green'   => 'light green',
+                                        'Dark Green'   => 'dark green',
+                                        'Mix'   => 'mix',
                                     ])
                                     ->required(),
 
