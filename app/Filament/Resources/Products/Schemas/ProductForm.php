@@ -128,39 +128,40 @@ class ProductForm
                                     ])
                                     ->required(),
 
-                                Select::make('color')
-                                    ->options([
-                                        'Black'  => 'Black',
-                                        'White'  => 'White',
-                                        'Red'    => 'Red',
-                                        'Blue'   => 'Blue',
-                                        'Green'  => 'Green',
-                                        'Grey'   => 'Grey',
-                                        'Navy'   => 'Navy',
-                                        'Beige'  => 'Beige',
-                                        'Brown'  => 'Brown',
-                                        'Pink'   => 'Pink',
-                                        'Dark blue'   => 'dark blue',
-                                        'light blue'   => 'light blue',
-                                        'Yellow'   => 'yellow',
-                                        'Light Yellow'   => 'light yellow',
-                                        'Maroon'   => 'maroon',
-                                        'Purple'   => 'purple',
-                                        'Light Green'   => 'light green',
-                                        'Dark Green'   => 'dark green',
-                                        'Mix'   => 'mix',
-                                    ])
-                                    ->required(),
+                                Select::make('product_color_id')
+                                    ->label('Color')
+                                    ->relationship('productColor', 'name')
+                                    ->required()
+                                    ->searchable()
+                                    ->preload()
+                                    ->native(false),
 
+                                TextInput::make('color')
+                                    ->label('Color Name')
+                                    ->hidden()
+                                    ->required(),
                                 TextInput::make('stock')
                                     ->numeric()
                                     ->required()
                                     ->minValue(0),
 
 
-                            ]),
+                            ]) // Add these two lines ↓↓↓
+                            ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
+                                if (!empty($data['product_color_id'])) {
+                                    $color = \App\Models\ProductColor::find($data['product_color_id']);
+                                    $data['color'] = $color?->name;
+                                }
+                                return $data;
+                            })
+                            ->mutateRelationshipDataBeforeSaveUsing(function (array $data): array {
+                                if (!empty($data['product_color_id'])) {
+                                    $color = \App\Models\ProductColor::find($data['product_color_id']);
+                                    $data['color'] = $color?->name;
+                                }
+                                return $data;
+                            }),
                     ]),
-
 
 
                 Section::make('Description & Status')
