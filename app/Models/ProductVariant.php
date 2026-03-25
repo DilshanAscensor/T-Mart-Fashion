@@ -12,11 +12,18 @@ class ProductVariant extends Model
         'size',
         'color',
         'stock',
+        'product_color_id',
 
     ];
 
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+
+     public function productColor(): BelongsTo
+    {
+        return $this->belongsTo(ProductColors::class, 'product_color_id');
     }
 }

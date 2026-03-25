@@ -9,6 +9,7 @@
                  ×
              </div>
              <a href="/">Home</a>
+             <a href="{{ route('products.index') }}">Products</a>
              <a href="/categories">Categories</a>
              <a href="/about-us">About</a>
              <a href="/contact-us">Contact</a>
