@@ -58,9 +58,9 @@
                         <div class="category-overlay">
                             <h2 class="product-title">{{ $product->name }}</h2>
 
-                            <p class="category-desc">
+                            {{-- <p class="category-desc">
                                 {{ Str::limit($product->description ?? 'Premium quality item', 80) }}
-                            </p>
+                            </p> --}}
 
                             <div class="product-meta">
                                 @if ($product->price)
