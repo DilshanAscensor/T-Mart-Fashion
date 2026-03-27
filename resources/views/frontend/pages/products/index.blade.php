@@ -65,7 +65,7 @@
                             <div class="product-meta">
                                 @if ($product->price)
                                     <span class="price">
-                                        ${{ number_format($product->price, 2) }}
+                                        LKR {{ number_format($product->price, 2) }}
                                     </span>
                                 @endif
 
