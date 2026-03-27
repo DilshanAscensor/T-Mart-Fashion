@@ -49,7 +49,7 @@
             <div class="categories-grid products-grid">
 
                 @forelse($products as $product)
-                <a href="{{ route('products.show', $product->id) }}" class="category-card product-card">
+                    <a href="{{ route('products.show', $product->id) }}" class="category-card product-card">
                         @if ($product->images->first())
                             <img src="{{ asset('storage/' . $product->images->first()->image_path) }}"
                                 alt="{{ $product->name }}" loading="lazy" class="product-image">
@@ -86,18 +86,60 @@
                     <div class="no-results" style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem;">
                         <h3>No products found</h3>
                         <p>Try adjusting your search or browse other categories.</p>
-                        <a href="{{ route('products.index') }}" class="btn" style=" color:red; text-decoration: underline;">Clear Search</a>
+                        <a href="{{ route('products.index') }}" class="btn"
+                            style=" color:red; text-decoration: underline;">Clear Search</a>
                     </div>
                 @endforelse
 
             </div>
         </div>
 
-        <!-- Pagination -->
-        <div class="pagination-wrapper">
-            {{ $products->appends(request()->query())->links() }}
-        </div>
+        @if ($products->hasPages())
+            <div class="flex justify-center mt-10" style="display: flex; justify-content: center;">
 
+                <nav class="flex items-center gap-2 bg-white shadow-md px-4 py-3 rounded-full">
+
+                    {{-- Previous --}}
+                    @if ($products->onFirstPage())
+                        <span class="px-4 py-2 text-gray-400 bg-gray-100 rounded-full cursor-not-allowed">
+                           <<
+                        </span>
+                    @else
+                        <a href="{{ $products->previousPageUrl() }}"
+                            class="px-4 py-2 bg-gray-100 hover:bg-black hover:text-white rounded-full transition">
+                            <<
+                        </a>
+                    @endif
+
+
+                    {{-- Page Numbers --}}
+                    @foreach ($products->getUrlRange(1, $products->lastPage()) as $page => $url)
+                        <a href="{{ $url }}"
+                            class="px-4 py-2 rounded-full text-sm font-medium transition
+                   {{ $page == $products->currentPage()
+                       ? 'bg-black text-yellow shadow'
+                       : 'bg-gray-100 hover:bg-black hover:text-white' }}">
+                            {{ $page }}
+                        </a>
+                    @endforeach
+
+
+                    {{-- Next --}}
+                    @if ($products->hasMorePages())
+                        <a href="{{ $products->nextPageUrl() }}"
+                            class="px-4 py-2 bg-gray-100 hover:bg-black hover:text-white rounded-full transition">
+                           >>
+                        </a>
+                    @else
+                        <span class="px-4 py-2 text-gray-400 bg-gray-100 rounded-full cursor-not-allowed">
+                            >>
+                        </span>
+                    @endif
+
+                </nav>
+
+            </div>
+        @endif
     </section>
 
     <style>
@@ -186,9 +228,14 @@
             color: #666;
             margin-bottom: 1rem;
         }
-        .product-title{
+
+        .product-title {
             font-size: 1.6rem;
-            font-weight: 600;
+
+         font-weight: 600;
+        }
+        .text-yellow{
+            color: var(--primary);;
         }
     </style>
 @endsection
