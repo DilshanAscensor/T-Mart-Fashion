@@ -87,7 +87,12 @@
                 <div class="action-buttons">
                     <button type="button" class="btn-primary text-center add-to-cart-btn"
                         data-url="{{ route('cart.add', ':id') }}" data-product-id="{{ $product->id }}">
-                        Add to Cart
+
+                        <span class="btn-text">Add to Cart</span>
+                        <span class="btn-loader" style="display:none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+
                     </button>
                 </div>
                 <div class="tabs">
@@ -250,22 +255,24 @@
                         title: 'Selection Required',
                         text: 'This variant is currently unavailable.',
                     });
-
                     return;
                 }
 
                 const qty = document.querySelector('.qty-input').value;
 
                 if (qty > selectedVariant.stock) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Out of Stock',
-                            text: 'This variant is currently unavailable.',
-                        });
-
-
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Out of Stock',
+                        text: 'This variant is currently unavailable.',
+                    });
                     return;
                 }
+
+                // ✅ disable button + show loader
+                this.disabled = true;
+                this.querySelector('.btn-text').style.display = 'none';
+                this.querySelector('.btn-loader').style.display = 'inline-block';
 
                 const baseUrl = this.getAttribute('data-url');
                 const productId = this.getAttribute('data-product-id');
@@ -285,13 +292,28 @@
                     })
                     .then(res => res.json())
                     .then(data => {
+
+                        // ✅ enable button again
+                        this.disabled = false;
+                        this.querySelector('.btn-text').style.display = 'inline';
+                        this.querySelector('.btn-loader').style.display = 'none';
+
                         if (data.success) {
+
                             document.querySelector('.cart-count').textContent = data.cartCount;
+
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'Added to cart',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
                         }
                     });
             });
         });
-
         const qtyInput = document.querySelector('.qty-input');
 
         document.querySelector('.qty-increase').addEventListener('click', () => {

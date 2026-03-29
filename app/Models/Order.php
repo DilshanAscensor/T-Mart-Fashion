@@ -11,29 +11,43 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Order extends Model
 {
     use SoftDeletes;
+
     protected $fillable = [
         'order_number',
-        'user_id',
-        'total_amount',
-        'status',
-        'shipping_name',
-        'shipping_phone',
-        'shipping_address',
-        'notes',
+        'full_name',
+        'email',
+        'phone',
+        'address1',
+        'address2',
+        'city',
+        'district',
+        'postal_code',
+        'subtotal',
+        'shipping',
+        'tax',
+        'discount',
+        'total',
+        'payment_method',
+        'payment_status',
+        'status'
     ];
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function items(): HasMany
+    public function items()
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    public function payment(): HasOne
+    protected static function boot()
     {
-        return $this->hasOne(Payment::class);
+        parent::boot();
+
+        static::creating(function ($order) {
+            $order->order_number = self::generateOrderNumber();
+        });
+    }
+
+    public static function generateOrderNumber()
+    {
+        return 'ORD-' . date('Ymd') . '-' . rand(1000, 9999);
     }
 }

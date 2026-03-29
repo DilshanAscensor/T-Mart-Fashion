@@ -1,5 +1,50 @@
   @extends('frontend.layout.main', ['titlePage' => 'Cart'])
   @section('content')
+      <style>
+          .page-loader {
+              position: fixed;
+              inset: 0;
+              background: rgba(85, 85, 85, 0.274);
+              display: none;
+              align-items: center;
+              justify-content: center;
+              z-index: 9999;
+          }
+
+          body.loading .page-loader {
+              display: flex;
+          }
+
+          .spinner {
+              width: 40px;
+              height: 40px;
+              border: 3px solid #eee;
+              border-top: 3px solid #000;
+              border-radius: 50%;
+              animation: spin 0.7s linear infinite;
+          }
+
+          @keyframes spin {
+              to {
+                  transform: rotate(360deg);
+              }
+          }
+
+          button:disabled {
+              background: #d4af37cc !important;
+              border-color: #ccc !important;
+              color: #ccc;
+              cursor: not-allowed;
+              pointer-events: none;
+              opacity: .6;
+          }
+
+          .btn-start-shopping {
+              font-size: 15px;
+              border-radius: 10px !important;
+          }
+      </style>
+
       <link rel="stylesheet" href="{{ asset('assets/css/cart.css') }}">
 
       <section>
@@ -44,7 +89,8 @@
                       <div class="empty-cart-message text-center py-8">
                           <h3>Your cart is empty</h3>
                           <p style="margin-bottom: 50px">Looks like you haven't added anything yet.</p>
-                          <a href="{{ route('categories.index') }}" class="btn btn-primary mt-4">Start Shopping</a>
+                          <a href="{{ route('categories.index') }}" class="btn btn-primary mt-4  btn-start-shopping">Start
+                              Shopping</a>
                       </div>
                   @endif
               </div>
@@ -77,89 +123,137 @@
 
                   <div class="summary-total">
                       <span>Total</span>
-                      <span>LKR {{ number_format($subtotal , 0) }}</span>
+                      <span>LKR {{ number_format($subtotal, 0) }}</span>
                   </div>
 
                   <div class="action-buttons">
-                      <a href="/checkout" class="btn btn-primary {{ $itemCount === 0 ? 'disabled' : '' }}">Proceed to
-                          Checkout</a>
-                      <a href="{{ route('categories.index') }}" class="btn btn-outline">Continue Shopping</a>
+
+                      @if ($itemCount > 0)
+                          <a href="{{ url('checkout') }}" class="btn btn-primary">
+                              Proceed to Checkout
+                          </a>
+                      @else
+                          <button class="btn btn-primary disabled" disabled>
+                              Proceed to Checkout
+                          </button>
+                      @endif
+
+                      <a href="{{ route('categories.index') }}" class="btn btn-outline">
+                          Continue Shopping
+                      </a>
+
                   </div>
               </div>
           </div>
       </section>
 
+      <div class="page-loader">
+          <div class="spinner"></div>
+      </div>
+
       <script>
-          document.querySelectorAll('.qty-btn').forEach(btn => {
-              btn.addEventListener('click', (e) => {
-                  const input = e.target.parentElement.querySelector('.qty-input');
-                  let val = parseInt(input.value);
-                  if (e.target.textContent === '+') val++;
-                  if (e.target.textContent === '-' && val > 1) val--;
-                  input.value = val;
-              });
-          });
+          if (document.querySelectorAll('.cart-item').length === 0) {
+              document.querySelector('.btn-primary').classList.add('disabled')
+          }
 
-          document.querySelectorAll('.qty-btn').forEach(btn => {
-              btn.addEventListener('click', function() {
+          document.addEventListener("DOMContentLoaded", function() {
 
-                  const id = this.dataset.id;
-                  const input = this.parentElement.querySelector('.qty-input');
-                  let val = parseInt(input.value);
+              /* ==============================
+                 CREATE LOADER
+              ============================== */
+              const loader = document.createElement("div");
+              loader.className = "page-loader";
+              loader.innerHTML = '<div class="spinner"></div>';
+              document.body.appendChild(loader);
 
-                  if (this.classList.contains('increase')) {
-                      val++;
-                  }
+              function showLoader() {
+                  document.body.classList.add("loading");
+              }
 
-                  if (this.classList.contains('decrease') && val > 1) {
-                      val--;
-                  }
+              function hideLoader() {
+                  document.body.classList.remove("loading");
+              }
 
-                  input.value = val;
 
-                  // 🔥 AJAX update
-                  fetch("{{ route('cart.update') }}", {
-                          method: "POST",
-                          headers: {
-                              "Content-Type": "application/json",
-                              "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                          },
-                          body: JSON.stringify({
-                              id: id,
-                              quantity: val
+              /* ==============================
+                 QUANTITY UPDATE
+              ============================== */
+              document.querySelectorAll('.qty-btn').forEach(btn => {
+                  btn.addEventListener('click', function() {
+
+                      const id = this.dataset.id;
+                      const input = this.parentElement.querySelector('.qty-input');
+                      let val = parseInt(input.value);
+
+                      if (this.classList.contains('increase')) {
+                          val++;
+                      }
+
+                      if (this.classList.contains('decrease') && val > 1) {
+                          val--;
+                      }
+
+                      input.value = val;
+
+                      showLoader();
+
+                      fetch("{{ route('cart.update') }}", {
+                              method: "POST",
+                              headers: {
+                                  "Content-Type": "application/json",
+                                  "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                              },
+                              body: JSON.stringify({
+                                  id: id,
+                                  quantity: val
+                              })
                           })
-                      })
-                      .then(res => res.json())
-                      .then(data => {
-                          location.reload(); // simplest way (you can optimize later)
-                      });
-              });
-          });
-
-
-          /* 🗑 REMOVE ITEM */
-          document.querySelectorAll('.remove-btn').forEach(btn => {
-              btn.addEventListener('click', function() {
-
-                  const id = this.dataset.id;
-
-                  if (!confirm("Remove this item?")) return;
-
-                  fetch("{{ route('cart.remove') }}", {
-                          method: "POST",
-                          headers: {
-                              "Content-Type": "application/json",
-                              "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                          },
-                          body: JSON.stringify({
-                              id: id
+                          .then(res => res.json())
+                          .then(data => {
+                              location.reload();
                           })
-                      })
-                      .then(res => res.json())
-                      .then(data => {
-                          location.reload();
-                      });
+                          .catch(err => {
+                              hideLoader();
+                              console.log(err);
+                          });
+
+                  });
               });
+
+
+              /* ==============================
+                 REMOVE ITEM
+              ============================== */
+              document.querySelectorAll('.remove-btn').forEach(btn => {
+                  btn.addEventListener('click', function() {
+
+                      const id = this.dataset.id;
+
+                      if (!confirm("Remove this item?")) return;
+
+                      showLoader();
+
+                      fetch("{{ route('cart.remove') }}", {
+                              method: "POST",
+                              headers: {
+                                  "Content-Type": "application/json",
+                                  "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                              },
+                              body: JSON.stringify({
+                                  id: id
+                              })
+                          })
+                          .then(res => res.json())
+                          .then(data => {
+                              location.reload();
+                          })
+                          .catch(err => {
+                              hideLoader();
+                          });
+
+                  });
+              });
+
           });
       </script>
   @endsection

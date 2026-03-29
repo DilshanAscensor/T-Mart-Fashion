@@ -22,9 +22,8 @@ class ProductsTable
                 TextColumn::make('slug')
                     ->searchable(),
                 TextColumn::make('price')
-                    ->money()
+                    ->prefix('Rs. ')
                     ->sortable(),
-
                 IconColumn::make('status')
                     ->boolean(),
                 TextColumn::make('created_at')

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductVariant extends Model
 {
-   protected $fillable = [
+    protected $fillable = [
         'product_id',
         'size',
         'color',
@@ -16,14 +16,33 @@ class ProductVariant extends Model
 
     ];
 
+    protected $appends = ['available_stock'];
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
 
-     public function productColor(): BelongsTo
+    public function productColor(): BelongsTo
     {
         return $this->belongsTo(ProductColor::class, 'product_color_id');
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'product_id', 'product_id')
+            ->whereColumn('color', 'color')
+            ->whereColumn('size', 'size');
+    }
+
+    public function getAvailableStockAttribute()
+    {
+        $sold = \App\Models\OrderItem::where('product_id', $this->product_id)
+            ->where('color', $this->color)
+            ->where('size', $this->size)
+            ->sum('quantity');
+
+        return $this->stock - $sold;
     }
 }

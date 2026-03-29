@@ -3,7 +3,7 @@
      <div class="footer-top">
          <div class="footer-brand">
              <h3>T MART</h3>
-             <p>Premium Fashion Destination • Since 2026</p>
+             <p>Dress Sharp. Live Smart</p>
              <div class="newsletter">
                  <form>
                      <input type="email" placeholder="Your email for exclusive offers">
