@@ -1,7 +1,7 @@
 @extends('frontend.layout.main', ['titlePage' => 'Home'])
 @section('content')
     <link rel="stylesheet" href="{{ asset('assets/css/home.css') }}">
-    <section class="hero-full">
+    <section class="hero-full" style="max-width: 100%">
         <div class="hero-content">
             <h1>Discover Your <span>Signature Style</span></h1>
             <p>Elevate your wardrobe with premium collections crafted for the modern individual. New Season 2026 now

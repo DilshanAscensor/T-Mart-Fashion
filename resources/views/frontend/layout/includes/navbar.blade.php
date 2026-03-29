@@ -1,7 +1,10 @@
  <link rel="stylesheet" href="{{ asset('assets/css/navbar.css') }}">
  <header>
      <div class="nav-container">
-         <div class="logo">T MART</div>
+         {{-- <div class="logo">T MART</div> --}}
+         <a href="/">
+             <img src="{{ asset('assets/img/logo.png') }}" style="width: 80px;border-radius: 10px" alt="">
+         </a>
          <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
          <nav id="navMenu">
              <div class="mobile-close" id="closeMenu"

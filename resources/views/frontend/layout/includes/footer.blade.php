@@ -2,14 +2,16 @@
  <footer class="pro-footer">
      <div class="footer-top">
          <div class="footer-brand">
-             <h3>T MART</h3>
+             <a href="/">
+                 <img src="{{ asset('assets/img/logo.png') }}" style="width: 180px;border-radius: 10px" alt="">
+             </a>
              <p>Dress Sharp. Live Smart</p>
-             <div class="newsletter">
+             {{-- <div class="newsletter">
                  <form>
                      <input type="email" placeholder="Your email for exclusive offers">
                      <button type="submit">Subscribe</button>
                  </form>
-             </div>
+             </div> --}}
          </div>
 
          <div class="footer-links">
