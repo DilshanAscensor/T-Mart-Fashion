@@ -100,14 +100,14 @@
                                 </div>
                             </label>
 
-                            <label class="payment-method disabled">
-                                <input type="radio" name="payment_method" value="card" disabled>
+                            <label class="payment-method">
+                                <input type="radio" name="payment_method" value="card">
 
                                 <i class="fas fa-credit-card payment-icon"></i>
 
                                 <div>
                                     Credit / Debit Card
-                                    <small>(Coming Soon)</small>
+                                    {{-- <small>(Coming Soon)</small> --}}
                                 </div>
                             </label>
 
@@ -177,7 +177,7 @@
                     </div>
 
                     <div class="summary-row">
-                        <span>Shipping</span>
+                        <span>Delivery Fee</span>
                         <span>LKR {{ number_format($shipping, 2) }}</span>
                     </div>
 
@@ -249,8 +249,12 @@
                             window.location.href = response.redirect;
                         });
 
+                    } else if (response.status === 'card') {
+
+                        window.location.href = response.redirect;
+
                     } else {
-                        throw new Error(response.message)
+                        throw new Error(response.message || 'An error occurred');
                     }
 
                 })

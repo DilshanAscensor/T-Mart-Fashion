@@ -6,6 +6,8 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\PaymentController;
+use Illuminate\Support\Facades\Mail;
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
@@ -44,3 +46,10 @@ Route::resource('categories', CategoryController::class);
 Route::resource('products', ProductController::class);
 
 Route::post('/checkout/store', [CheckoutController::class, 'store'])->name('checkout.store');
+
+//Payment Routes
+
+Route::get('/payment/card/{order}', [PaymentController::class, 'card'])->name('payment.card');
+Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
+Route::get('/payment/cancel/{orderId}', [PaymentController::class, 'cancel'])
+    ->name('payment.cancel');

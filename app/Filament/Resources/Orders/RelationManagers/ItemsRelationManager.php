@@ -13,6 +13,7 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -35,11 +36,24 @@ class ItemsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn($query) => $query->with('product.images')) // Eager loading
             ->recordTitleAttribute('product_name')
             ->columns([
+                ImageColumn::make('first_image')
+                    ->label('Image')
+                    ->disk('public')
+                    ->width(70)
+                    ->height(70)
+                    ->square()
+                    ->alignCenter()
+                    ->extraImgAttributes([
+                        'class' => 'object-cover rounded-lg shadow-sm cursor-pointer'
+                    ]),
+
                 TextColumn::make('product_name')
                     ->label('Product')
-                    ->searchable(),
+                    ->searchable()
+                    ->wrap(),
 
                 TextColumn::make('color')
                     ->badge()
@@ -50,17 +64,18 @@ class ItemsRelationManager extends RelationManager
                     ->color('info'),
 
                 TextColumn::make('quantity')
-                    ->numeric(),
+                    ->numeric()
+                    ->alignCenter(),
 
                 TextColumn::make('price')
-                    ->money('LKR'),
+                    ->money('LKR')
+                    ->alignEnd(),
 
                 TextColumn::make('total')
-                    ->money('LKR'),
+                    ->money('LKR')
+                    ->alignEnd(),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->headerActions([
                 CreateAction::make(),
                 AssociateAction::make(),

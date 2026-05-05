@@ -116,7 +116,7 @@
                       <span>LKR {{ number_format($subtotal, 0) }}</span>
                   </div>
                   <div class="summary-row">
-                      <span>Shipping</span>
+                      <span>Delivery Fee</span>
                       <span>Calculated at checkout</span>
                   </div>
 

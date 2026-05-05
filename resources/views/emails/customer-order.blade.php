@@ -98,7 +98,7 @@
                                 </tr>
 
                                 <tr>
-                                    <td>Shipping</td>
+                                    <td>Delivery Fee</td>
                                     <td align="right">LKR {{ number_format($order->shipping, 2) }}</td>
                                 </tr>
 

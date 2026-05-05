@@ -46,6 +46,7 @@
              <a href="#"><i class="fab fa-linkedin-in"></i></a>
              <a href="#"><i class="fab fa-youtube"></i></a>
          </div>
-         <p>© 2026 T MART. All rights reserved. Crafted with elegance.</p>
+         <p>© 2026 TMART FASHION. All rights reserved. <a style="color: rgba(241, 241, 131, 0.76)"
+                 href="https://www.linkedin.com/in/dilshan-herath96" target="-blank">Developed By CYPX</a></p>
      </div>
  </footer>

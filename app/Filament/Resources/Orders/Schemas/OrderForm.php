@@ -35,6 +35,7 @@ class OrderForm
                     ->required()
                     ->numeric(),
                 TextInput::make('shipping')
+                    ->label('Delivery Fee')
                     ->required()
                     ->numeric()
                     ->default(0.0),
@@ -59,13 +60,13 @@ class OrderForm
                     ->required(),
                 Select::make('status')
                     ->options([
-            'pending' => 'Pending',
-            'confirmed' => 'Confirmed',
-            'processing' => 'Processing',
-            'shipped' => 'Shipped',
-            'delivered' => 'Delivered',
-            'cancelled' => 'Cancelled',
-        ])
+                        'pending' => 'Pending',
+                        'confirmed' => 'Confirmed',
+                        'processing' => 'Processing',
+                        'shipped' => 'Shipped',
+                        'delivered' => 'Delivered',
+                        'cancelled' => 'Cancelled',
+                    ])
                     ->default('pending')
                     ->required(),
             ]);

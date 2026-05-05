@@ -68,9 +68,10 @@ class ViewOrder extends ViewRecord
                     ])),
 
             ])
-                ->label('Update Status')
-                ->icon('heroicon-o-arrow-path'),
-
+                ->label('Update Order Status')
+                ->icon('heroicon-o-arrow-path')
+                ->color('warning')
+                ->button(),
             ActionGroup::make([
 
                 Action::make('markPaid')
@@ -89,7 +90,7 @@ class ViewOrder extends ViewRecord
                     ])),
 
             ])
-                ->label('Payment')
+                ->label('Update Payment Status')
                 ->icon('heroicon-o-credit-card')
                 ->color('gray')
                 ->button()

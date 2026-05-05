@@ -125,6 +125,7 @@ class OrdersTable
                     ->multiple()
                     ->label('Payment Status'),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filtersFormMaxHeight('400px')
             ->recordActions([
                 ViewAction::make(),

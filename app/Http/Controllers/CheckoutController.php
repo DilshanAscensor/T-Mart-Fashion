@@ -32,150 +32,120 @@ class CheckoutController extends Controller
 
     public function store(Request $request)
     {
-        try {
-            $request->validate([
-                'full_name' => 'required',
-                'email' => 'required|email',
-                'phone' => 'required',
-                'address1' => 'required',
-                'city' => 'required',
-                'district' => 'required',
-                // 'payment_method' => 'required'
-                'payment_method' => 'nullable'
-            ]);
+        $request->validate([
+            'full_name' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required',
+            'address1' => 'required',
+            'city' => 'required',
+            'district' => 'required',
+            'payment_method' => 'required|in:cod,card'
+        ]);
 
-            $cart = session('cart');
+        $cart = session('cart');
 
-            if (!$cart || count($cart) == 0) {
-                return back()->with('error', 'Cart is empty');
-            }
-
-            DB::beginTransaction();
-        } catch (\Exception $e) {
-
-            DB::rollback();
-
-            Log::error('Checkout ', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            return back()->with('error', 'Order failed');
+        if (!$cart || count($cart) == 0) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Cart is empty'
+            ], 422);
         }
 
         try {
+            DB::beginTransaction();
 
-            $subtotal = 0;
-
-            foreach ($cart as $item) {
-                $subtotal += $item['price'] * $item['quantity'];
-            }
-
-            $shipping = 500;
+            $subtotal = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']);
+            $shipping = 400;
             $tax = 0;
             $discount = 0;
             $total = $subtotal + $shipping + $tax - $discount;
 
-            // create order
             $order = Order::create([
-                'full_name' => $request->full_name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'address1' => $request->address1,
-                'address2' => $request->address2,
-                'city' => $request->city,
-                'district' => $request->district,
-                'postal_code' => $request->postal_code,
+                'full_name'      => $request->full_name,
+                'email'          => $request->email,
+                'phone'          => $request->phone,
+                'address1'       => $request->address1,
+                'address2'       => $request->address2,
+                'city'           => $request->city,
+                'district'       => $request->district,
+                'postal_code'    => $request->postal_code,
 
-                'subtotal' => $subtotal,
-                'shipping' => $shipping,
-                'tax' => $tax,
-                'discount' => $discount,
-                'total' => $total,
+                'subtotal'       => $subtotal,
+                'shipping'       => $shipping,
+                'tax'            => $tax,
+                'discount'       => $discount,
+                'total'          => $total,
 
-                'payment_method' => 'cod',
+                'payment_method' => $request->payment_method,
                 'payment_status' => 'pending',
-                'status' => 'pending'
+                'status'         => 'pending',
             ]);
 
-            // save items
+            // Save Order Items
             foreach ($cart as $item) {
                 OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item['product_id'] ?? null,
+                    'order_id'     => $order->id,
+                    'product_id'   => $item['product_id'] ?? null,
                     'product_name' => $item['name'],
-                    'image' => $item['image'],
-                    'color' => $item['color'] ?? null,
-                    'size' => $item['size'] ?? null,
-                    'quantity' => $item['quantity'],
-                    'price' => $item['price'],
-                    'total' => $item['price'] * $item['quantity']
+                    'image'        => $item['image'],
+                    'color'        => $item['color'] ?? null,
+                    'size'         => $item['size'] ?? null,
+                    'quantity'     => $item['quantity'],
+                    'price'        => $item['price'],
+                    'total'        => $item['price'] * $item['quantity'],
                 ]);
             }
 
             DB::commit();
 
-            // load items for email
             $order->load('items');
-
-            // send admin mail
-            Mail::to('dilshanmadushanka981@gmail.com')->send(new AdminOrderMail($order));
-
-            // send customer mail
-            Mail::to($order->email)->send(new CustomerOrderMail($order));
 
             session()->forget('cart');
 
+            // ==================== COD ====================
+            if ($request->payment_method === 'cod') {
+                $this->sendOrderEmails($order);   // Extracted method
+
+                return response()->json([
+                    'status'   => 'success',
+                    'message'  => 'Order placed successfully!',
+                    'redirect' => route('home.index')
+                ]);
+            }
+
+            // ==================== CARD ====================
             return response()->json([
-                'status' => 'success',
-                'message' => 'Order ' . $order->order_number . ' placed successfully!',
-                'redirect' => route('home.index')
+                'status'   => 'card',
+                'redirect' => route('payment.card', $order->id)
             ]);
         } catch (\Exception $e) {
-
             DB::rollback();
-
-            Log::error('Checkout Store Error', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
+            Log::error('Checkout Error', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
 
             return response()->json([
-                'status' => 'error',
-                'message' => 'Order failed'
+                'status'  => 'error',
+                'message' => 'Something went wrong. Please try again.'
             ], 500);
         }
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    private function sendOrderEmails(Order $order)
     {
-        //
-    }
+        try {
+            // Admin Email
+            Mail::to('dilshanmadushanka981@gmail.com')
+                ->send(new AdminOrderMail($order));
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+            // Customer Email
+            Mail::to($order->email)
+                ->send(new CustomerOrderMail($order));
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+            Log::info('Order emails sent', ['order_id' => $order->id]);
+        } catch (\Exception $e) {
+            Log::error('Email sending failed', [
+                'order_id' => $order->id,
+                'error' => $e->getMessage()
+            ]);
+            // Don't fail the order if email fails
+        }
     }
 }

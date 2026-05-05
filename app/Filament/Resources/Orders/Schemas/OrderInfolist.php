@@ -27,7 +27,7 @@ class OrderInfolist
 
                         TextEntry::make('status')
                             ->badge()
-                            ->label('Status')
+                            ->label('Order Status')
                             ->icon('heroicon-o-signal')
                             ->color(fn($state) => match ($state) {
                                 'pending' => 'gray',
@@ -111,7 +111,7 @@ class OrderInfolist
 
                         TextEntry::make('shipping')
                             ->money('LKR')
-                            ->label('Shipping'),
+                            ->label('Delivery Fee'),
 
                         TextEntry::make('tax')
                             ->money('LKR')
