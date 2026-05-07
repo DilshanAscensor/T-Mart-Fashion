@@ -21,6 +21,10 @@ class ProductsTable
                     ->searchable(),
                 TextColumn::make('slug')
                     ->searchable(),
+                TextColumn::make('product_code')
+                    ->searchable()
+                    ->default('—')
+                    ->sortable(),
                 TextColumn::make('price')
                     ->prefix('Rs. ')
                     ->sortable(),

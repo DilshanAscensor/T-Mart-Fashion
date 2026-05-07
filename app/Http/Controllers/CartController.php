@@ -14,22 +14,31 @@ class CartController extends Controller
         $product = Product::findOrFail($id);
         $variant = ProductVariant::findOrFail($request->variant_id);
 
-        // ✅ stock validation
-        if ($variant->stock < $request->quantity) {
+        $cart = session()->get('cart', []);
+
+        // 🔥 UNIQUE KEY (product + variant)
+        $cartKey = $id . '_' . $variant->id;
+
+        $newQty = $request->quantity;
+
+        // If already in cart, add existing quantity
+        if (isset($cart[$cartKey])) {
+            $newQty += $cart[$cartKey]['quantity'];
+        }
+
+        // ✅ Check against AVAILABLE stock (important)
+        if ($variant->available_stock < $newQty) {
             return response()->json([
                 'success' => false,
                 'message' => 'Not enough stock'
             ]);
         }
 
-        $cart = session()->get('cart', []);
-
-        // 🔥 UNIQUE KEY (product + variant)
-        $cartKey = $id . '_' . $variant->id;
-
         if (isset($cart[$cartKey])) {
-            $cart[$cartKey]['quantity'] += $request->quantity;
+            // update quantity
+            $cart[$cartKey]['quantity'] = $newQty;
         } else {
+            // add new item
             $cart[$cartKey] = [
                 'product_id' => $product->id,
                 'variant_id' => $variant->id,
@@ -38,7 +47,7 @@ class CartController extends Controller
                 'size'       => $variant->size,
                 'quantity'   => $request->quantity,
                 'price'      => $product->price,
-                'stock'      => $variant->stock,
+                'stock'      => $variant->available_stock, // ✅ important
                 'image'      => $product->images->first()?->image_path,
             ];
         }

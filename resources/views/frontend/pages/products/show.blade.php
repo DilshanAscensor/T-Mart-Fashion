@@ -229,17 +229,15 @@
                     document.querySelector('.qty-input').max = selectedVariant.stock;
 
                     if (selectedVariant.stock <= 0) {
-                        if (selectedVariant.stock <= 0) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Out of Stock',
-                                text: 'This variant is currently unavailable.',
-                            });
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Out of Stock',
+                            text: 'This variant is currently unavailable.',
+                        });
 
-                            document.querySelector('.add-to-cart-btn').disabled = true;
-                        } else {
-                            document.querySelector('.add-to-cart-btn').disabled = false;
-                        }
+                        document.querySelector('.add-to-cart-btn').disabled = true;
+                    } else {
+                        document.querySelector('.add-to-cart-btn').disabled = false;
                     }
                 }
             }
@@ -310,7 +308,31 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             });
+
+                        } else {
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Stock Error',
+                                text: data.message || 'Something went wrong',
+                            });
+
                         }
+                    })
+                    .catch(error => {
+
+                        // ✅ re-enable button on error too
+                        this.disabled = false;
+                        this.querySelector('.btn-text').style.display = 'inline';
+                        this.querySelector('.btn-loader').style.display = 'none';
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Something went wrong',
+                        });
+
+                        console.error(error);
                     });
             });
         });

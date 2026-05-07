@@ -54,6 +54,29 @@ class CheckoutController extends Controller
         try {
             DB::beginTransaction();
 
+            // ✅ IMPORTANT: STOCK VALIDATION BEFORE ORDER
+            foreach ($cart as $item) {
+
+                $variant = ProductVariant::where('id', $item['variant_id'])->lockForUpdate()->first();
+
+                if (!$variant) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => "Product variant not found."
+                    ], 422);
+                }
+
+                if ($variant->available_stock < $item['quantity']) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => "{$item['name']} ({$item['color']} - {$item['size']}) is out of stock."
+                    ], 422);
+                }
+            }
+
+            // 💰 totals
             $subtotal = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']);
             $shipping = 400;
             $tax = 0;
@@ -81,7 +104,7 @@ class CheckoutController extends Controller
                 'status'         => 'pending',
             ]);
 
-            // Save Order Items
+            // 🧾 Save Order Items
             foreach ($cart as $item) {
                 OrderItem::create([
                     'order_id'     => $order->id,
@@ -104,7 +127,7 @@ class CheckoutController extends Controller
 
             // ==================== COD ====================
             if ($request->payment_method === 'cod') {
-                $this->sendOrderEmails($order);   // Extracted method
+                $this->sendOrderEmails($order);
 
                 return response()->json([
                     'status'   => 'success',
@@ -119,8 +142,12 @@ class CheckoutController extends Controller
                 'redirect' => route('payment.card', $order->id)
             ]);
         } catch (\Exception $e) {
-            DB::rollback();
-            Log::error('Checkout Error', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            DB::rollBack();
+
+            Log::error('Checkout Error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
 
             return response()->json([
                 'status'  => 'error',

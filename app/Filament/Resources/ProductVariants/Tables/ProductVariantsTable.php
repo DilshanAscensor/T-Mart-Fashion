@@ -116,16 +116,6 @@ class ProductVariantsTable
                                 Placeholder::make('available')
                                     ->label('Available')
                                     ->content(fn($record) => $record->available_stock),
-
-                                Placeholder::make('sold')
-                                    ->label('Sold')
-                                    ->content(
-                                        fn($record) =>
-                                        \App\Models\OrderItem::where(
-                                            'product_id',
-                                            $record->id
-                                        )->sum('quantity')
-                                    ),
                             ]),
 
                         TextInput::make('adjust')

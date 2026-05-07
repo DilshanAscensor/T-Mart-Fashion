@@ -52,6 +52,15 @@ class ProductForm
                                     ->unique(ignoreRecord: true)
                                     ->helperText('Auto-generated from name – editable if needed')
                                     ->dehydrated(true),
+
+                                TextInput::make('product_code')
+                                    ->label('Product Code')
+                                    ->required()
+                                    ->maxLength(50)
+                                    ->unique(ignoreRecord: true)
+                                    ->helperText('Unique manual product code (e.g. SHIRT-RED-001)')
+                                    ->placeholder('ABC-12345')
+                                    ->columnSpan(1),
                             ]),
                     ]),
 
