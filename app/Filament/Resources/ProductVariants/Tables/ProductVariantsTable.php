@@ -21,7 +21,7 @@ class ProductVariantsTable
     {
         return $table
             ->columns([
-                TextColumn::make('product.code')
+                TextColumn::make('product.product_code')
                     ->label('Product Code')
                     ->searchable(),
 
