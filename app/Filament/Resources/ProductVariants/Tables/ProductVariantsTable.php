@@ -21,10 +21,13 @@ class ProductVariantsTable
     {
         return $table
             ->columns([
+                TextColumn::make('product.code')
+                    ->label('Product Code')
+                    ->searchable(),
+
                 TextColumn::make('product.name')
                     ->label('Product')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
 
                 TextColumn::make('productColor.name')
                     ->label('Color')
