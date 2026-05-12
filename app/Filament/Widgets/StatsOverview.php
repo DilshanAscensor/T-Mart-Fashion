@@ -17,7 +17,7 @@ class StatsOverview extends BaseWidget
             Stat::make(
                 'Revenue',
                 'LKR ' . number_format(
-                    Order::where('payment_status', 'paid')->sum('total')
+                    Order::sum('total')
                 )
             )
                 ->description('Total Paid Orders')
