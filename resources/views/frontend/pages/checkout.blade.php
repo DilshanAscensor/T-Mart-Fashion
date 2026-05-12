@@ -87,38 +87,36 @@
                     <!-- PAYMENT METHOD -->
                     <div class="section-card">
                         <div class="section-title">Payment Method</div>
-
                         <div class="payment-options">
 
                             <!-- Cash on Delivery -->
                             <label class="payment-method active">
                                 <input type="radio" name="payment_method" value="cod" checked>
                                 <i class="fas fa-money-bill-wave payment-icon"></i>
-                                <div class="method-content">
+                                <div class="method-content card-info">
                                     <strong>Cash on Delivery</strong>
-                                    <small>Pay when you receive your order</small>
+                                    <small class="">Pay when you receive your order</small>
                                 </div>
                             </label>
 
-                            <!-- Credit / Debit Card -->
+                            <!-- Credit / Debit Card - Improved Layout -->
                             <label class="payment-method">
                                 <input type="radio" name="payment_method" value="card">
                                 <i class="fas fa-credit-card payment-icon"></i>
-                                <div class="method-content">
-                                    <strong>Credit / Debit Card</strong>
-                                    <small>Visa, Mastercard, UnionPay & BOC </small>
-
-                                    <!-- Single Image - Cleaner & Smaller -->
+                                <div class="method-content card-method">
+                                    <div class="card-info">
+                                        <strong>Credit / Debit Card</strong>
+                                        <small>Visa, Mastercard, UnionPay & BOC</small>
+                                    </div>
                                     <div class="ipg-logos">
                                         <img src="{{ asset('assets/img/ipg_logos.png') }}"
-                                            alt="We Accept Visa, Mastercard, UnionPay" class="ipg-logos-img">
+                                            alt="We Accept Visa, Mastercard, UnionPay & BOC" class="ipg-logos-img">
                                     </div>
                                 </div>
                             </label>
 
                         </div>
                     </div>
-
 
                     <!-- ORDER REVIEW -->
                     <div class="section-card">
@@ -299,100 +297,76 @@
         }
 
         .payment-method:hover {
-            border-color: #2563eb;
             box-shadow: 0 6px 16px rgba(37, 99, 235, 0.08);
-        }
-
-        .payment-method.active {
-            border-color: #2563eb;
         }
 
         .payment-icon {
             font-size: 26px;
             margin-top: 3px;
+            s
         }
 
-        .method-content {
+        /* New Card Method Layout */
+        .card-method {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-info {
             flex: 1;
         }
 
-        .method-content strong {
+        .card-info strong {
             font-size: 16.5px;
+            display: block;
         }
 
-        .method-content small {
+        .card-info small {
             color: #6b7280;
             font-size: 13.5px;
         }
 
-        /* Single Logo Image Styling */
-        .ipg-logos {
-            margin-top: 10px;
-        }
-
+        /* Logo Styling */
         .ipg-logos-img {
-            max-width: 50%;
+            max-width: 220px;
             width: auto;
+            height: auto;
             opacity: 0.95;
-            filter: contrast(1.1);
         }
 
-        /* ====================== MEDIA QUERIES ====================== */
+        /* ====================== MOBILE FRIENDLY ====================== */
 
-        /* Tablet (768px to 1024px) */
-        @media (max-width: 1024px) {
-            .payment-method {
-                padding: 16px 18px;
-            }
-
-            .ipg-logos-img {
-                max-width: 55%;
-            }
-        }
-
-        /* Mobile Landscape / Small Tablet (480px to 767px) */
         @media (max-width: 767px) {
             .payment-method {
                 padding: 16px;
                 gap: 14px;
             }
 
+            .card-method {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
             .ipg-logos-img {
-                max-width: 65%;
+                max-width: 180px;
             }
         }
 
-        /* Small Mobile (Portrait - below 480px) */
         @media (max-width: 479px) {
             .payment-method {
-                padding: 14px 16px;
-                gap: 12px;
+                padding: 14px;
+            }
+
+            .card-info strong {
+                font-size: 15.8px;
             }
 
             .ipg-logos-img {
-                max-width: 75%;
-                /* Larger on small screens */
-            }
-
-            .method-content strong {
-                font-size: 15.5px;
-            }
-
-            .payment-icon {
-                font-size: 24px;
-            }
-        }
-
-        /* Mobile Optimization */
-        @media (max-width: 767px) {
-            .ipg-logos-img {
-                max-width: 70%;
-            }
-        }
-
-        @media (max-width: 479px) {
-            .ipg-logos-img {
-                max-width: 85%;
+                max-width: 160px;
             }
         }
     </style>

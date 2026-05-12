@@ -145,18 +145,31 @@ class PaymentController extends Controller
     private function sendOrderEmails(Order $order)
     {
         try {
-            Mail::to('dilshanmadushanka981@gmail.com')
+            // $adminEmail   = 'dilshan.zincat@gmail.com';
+            $adminEmail   = 'sanjumadhumadawa90@gmail.com';
+
+            // === ADMIN EMAIL ===
+            Mail::to($adminEmail)
                 ->send(new AdminOrderMail($order));
 
-            // Customer Email
+            Log::info('Admin order email sent', [
+                'order_id' => $order->id,
+                'to' => $adminEmail,
+            ]);
+
+            // === CUSTOMER EMAIL ===
             Mail::to($order->email)
                 ->send(new CustomerOrderMail($order));
 
-            Log::info('Order emails sent', ['order_id' => $order->id]);
-        } catch (\Exception $e) {
-            Log::error('Email sending failed', [
+            Log::info('Customer order email sent', [
                 'order_id' => $order->id,
-                'error' => $e->getMessage()
+                'to' => $order->email
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Order email sending failed', [
+                'order_id' => $order->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
         }
     }
