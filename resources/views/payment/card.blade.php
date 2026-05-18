@@ -6,8 +6,8 @@
     <title>Pay Now - {{ $order->id }}</title>
 
     <!-- Correct checkout.js for v63+ -->
-    <script src="https://test-bankofceylon.mtf.gateway.mastercard.com/static/checkout/checkout.min.js"
-        data-error="errorCallback" data-cancel="cancelCallback" data-complete="completeCallback"></script>
+    <script src="https://bankofceylon.gateway.mastercard.com/static/checkout/checkout.min.js" data-error="errorCallback"
+        data-cancel="cancelCallback"></script>
 </head>
 
 <body>

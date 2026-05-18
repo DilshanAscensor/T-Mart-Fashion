@@ -19,7 +19,7 @@ class PaymentController extends Controller
         $merchantId = env('MPGS_MERCHANT_ID');
         $password   = env('MPGS_PASSWORD');
 
-        $url = "https://test-bankofceylon.mtf.gateway.mastercard.com/api/rest/version/100/merchant/{$merchantId}/session";
+        $url = "https://bankofceylon.gateway.mastercard.com/api/rest/version/100/merchant/{$merchantId}/session";
 
         $payload = [
             "apiOperation" => "INITIATE_CHECKOUT",
@@ -82,7 +82,7 @@ class PaymentController extends Controller
         $merchantId = env('MPGS_MERCHANT_ID');
         $password   = env('MPGS_PASSWORD');
 
-        $url = "https://test-bankofceylon.mtf.gateway.mastercard.com/api/rest/version/100/merchant/{$merchantId}/order/{$orderId}";
+        $url = "https://bankofceylon.gateway.mastercard.com/api/rest/version/100/merchant/{$merchantId}/order/{$orderId}";
 
         $response = Http::withBasicAuth("merchant.{$merchantId}", $password)
             ->get($url);
